@@ -1,0 +1,96 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2020-04-11T08:00:39+08:00
+
+====== Java面试题2 ======
+创建日期 星期六 11 四月 2020
+
+1. 什么是可变参数？
+	可变参数允许调用参数数量不同的方法。
+{{{code: lang="java" linenumbers="True"
+public int sum(int... numbers) {
+        int sum = 0;
+        for (int number: numbers) {
+            sum += number;
+        }
+        return sum;
+    }
+}}}
+	
+2. spring自动装配有哪些限制
+	①如果使用了构造器注入或者setter注入，那么将覆盖自动装箱的依赖关系。
+	②基本数据类型的值、字符串字面量、类字面量无法使用自动装箱来注入。
+	③有先考虑使用显示的装配来进行更精确的依赖注入而不是使用自动装配
+3. 什么是领域模型
+	领域模型是领域内的概念类或现实世界中对象的可视化表示，又称为概念模型或分析对象模型，它专注于分析问题领域本身，发掘重要的业务领域概念，并建立业务领域概念之间的关系。贫血模型是指使用的领域对象中只有setter和getter方法（POJO），所有的业务逻辑都不包含在领域对象中而是放在业务逻辑层。充血模型将大多数业务逻辑和持久化放在领域对象中，业务逻辑（业务门面）只是完成对业务逻辑的封装、事务和权限等的处理。下面两张图分别展示了贫血模型和充血模型的分层架构。
+4. 说说http,https协议
+	**http**: 是互联网上应用最为广泛的一种网络协议，是一个客户端和服务器端请求和应答的标准（TCP），用于从WWW服务器传输超文本到本地浏览器的传输协议，它可以使浏览器更加高效，使网络传输减少。
+	**https**:是以安全为目标的HTTP通道，简单讲是HTTP的安全版，即HTTP下加入SSL层，HTTPS的安全基础是SSL，因此加密的详细内容就需要SSL。
+	**区别**：1）https协议需要到ca申请证书，一般免费证书较少，因而需要一定费用。
+		  2）http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。
+		  3）http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。
+		  4）http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。
+5. “==”和equals的区别
+	1）==比较的是值，equals比较的是 地址值
+	2）一般我们会重写equals让它按照我们的意愿去比较相关属性，而不是单纯的比较地址值。
+6. .super.getClass()方法调用
+	下面程序的输出结果是多少？
+	import java.util.Date;
+	public class Test extends Date{
+	public static void main(String[] args) { new Test().test(); }
+	public void test(){ 
+		System.out.println( super.getClass().getName()); }
+	}
+	结果：Test
+7. 10条常用SQL优化技巧
+	1）负向条件查询不能使用索引
+	2）签到模糊查询不能使用索引
+	3）数据区分度不大的字段不宜使用索引
+	4）在属性上进行计算不能命中索引
+	5）如果业务大部分是单条查询，使用Hash索引性能更好，例如用户中心
+	6）允许为null的列，查询有潜在大坑
+	7）复合索引最左前缀，并不是值SQL语句的where顺序要和复合索引一致
+	8）使用ENUM而不是字符串
+	9）如果明确知道只有一条结果返回，limit 1能够提高效率
+	10）把计算放到业务层而不是数据库层，除了节省数据的CPU，还有意想不到的查询缓存优化效果
+	11）强制类型转换会全表扫描
+8. HashMap和Hashtable的区别
+	都属于Map接口的类，实现了将惟一键映射到特定的值上。
+	HashMap 类没有分类或者排序。它允许一个 null 键和多个 null 值。
+	Hashtable 类似于 HashMap，但是不允许 null 键和 null 值。它也比 HashMap 慢，因为它是同步的。
+9. spring中Bean的作用域
+	**singleton**： Spring IoC容器中只会存在一个共享的Bean实例，无论有多少个Bean引用它，始终指向同一对象。Singleton作用域是Spring中的缺省作用域。
+	**prototype**： 每次通过Spring容器获取prototype定义的bean时，容器都将创建一个新的Bean实例，每个Bean实例都有自己的属性和状态，而singleton全局只有一个对象。
+	**request**： 在一次Http请求中，容器会返回该Bean的同一实例。而对不同的Http请求则会产生新的Bean，而且该bean仅在当前Http Request内有效。
+	**session**： 在一次Http Session中，容器会返回该Bean的同一实例。而对不同的Session请求则会创建新的实例，该bean实例仅在当前Session内有效。
+	global Session： 在一个全局的Http Session中，容器会返回该Bean的同一个实例，仅在使用portlet context时有效。
+10.spring中Bean的生命周期
+	1）实例化一个Bean，也就是我们通常说的new。
+	2）按照Spring上下文对实例化的Bean进行配置，也就是IOC注入。
+	如果这个Bean实现了BeanNameAware接口，会调用它实现的setBeanName(String beanId)方法，此处传递的是Spring配置文件中Bean的ID。
+	如果这个Bean实现了BeanFactoryAware接口，会调用它实现的setBeanFactory()，传递的是Spring工厂本身（可以用这个方法获取到其他Bean）。
+	如果这个Bean实现了ApplicationContextAware接口，会调用setApplicationContext(ApplicationContext)方法，传入Spring上下文。
+	如果这个Bean关联了BeanPostProcessor接口，将会调用postProcessBeforeInitialization(Object obj, String s)方法，BeanPostProcessor经常被用作是Bean内容的更改，并且由于这个是在Bean初始化结束时调用After方法，也可用于内存或缓存技术。
+	如果这个Bean在Spring配置文件中配置了init-method属性会自动调用其配置的初始化方法。如果这个Bean关联了BeanPostProcessor接口，将会调用postAfterInitialization(Object obj, String s)方法。
+	3）当Bean不再需要时，会经过清理阶段，如果Bean实现了DisposableBean接口，会调用其实现的destroy方法。
+	4）最后，如果这个Bean的Spring配置中配置了destroy-method属性，会自动调用其配置的销毁方法。
+11. 说说spring两种注入方式
+	**构造注入**：构造注入可以在构造器中决定依赖关系的注入顺序，优先依赖的优先注入。对于依赖关系无须变化的Bean，构造注入更有用处，因为没有setter方法，所有的依赖关系全部在构造器内设定，因此，不用担心后续代码对依赖关系的破坏。构造注入使依赖关系只能在构造器中设定，则只有组件的创建者才能改变组件的依赖关系。对组件的调用者而言，组件内部的依赖关系完全透明，更符合高内聚的原则。
+	**设值注入**：设值注入与传统的JavaBean的写法更相似，程序员更容易理解、接受，通过setter方式设定依赖关系显得更加直观、明显;
+12. spring框架中都用到了哪些设计模式
+	**代理模式**：在AOP和remoting中被用的较多；
+	**单例模式**：在spring篇日志文件中定义的bean默认为单例模式；
+	**模板方法模式**：用来解决代码重复的问题；
+	**前端控制器模式**：Spring提供了DispatcherServlet来对请求进行分发。依赖注入模式：贯穿于BeanFactory / ApplicationContext接口的核心理念。
+	**工厂模式**：BeanFactory用来创建对象的实例。
+13. activityshi什么
+14. ajax最大的特点是什么
+	1）通过异步模式，提升了用户体验；
+	2）优化了浏览器和服务器之间的传输，减少不必要的数据往返，减少了带宽占用；
+	3）Ajax在客户端运行，承担了一部分本来由服务器承担的工作，减少了大用户量下的服务器负载。Ajax可以实现异步通信效果，实现页面局部刷新，带来更好的用户体验；按需获取数据，节约带宽资源。
+
+
+
+
+
+
